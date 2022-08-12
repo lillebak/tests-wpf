@@ -30,6 +30,8 @@ namespace ActiveWindow
         [DllImport("user32.dll")]
         private static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
 
+        [DllImport("user32.dll")]
+        private static extern int GetWindowTextLength(IntPtr hWnd);
 
         public MainWindow()
         {
@@ -55,15 +57,15 @@ namespace ActiveWindow
 
         private string GetActiveWindowTitle()
         {
-            const int nChars = 256;
-            StringBuilder Buff = new StringBuilder(nChars);
-            IntPtr handle = GetForegroundWindow();
+            IntPtr windowPtr = GetForegroundWindow();
+            int titleLength = GetWindowTextLength(windowPtr) + 1;
+            StringBuilder strBuilder = new StringBuilder(titleLength);
 
-            if (GetWindowText(handle, Buff, nChars) > 0)
+            if (GetWindowText(windowPtr, strBuilder, titleLength) > 0)
             {
-                return Buff.ToString();
+                return strBuilder.ToString();
             }
-            return null;
+            return "";
         }
 
     }
